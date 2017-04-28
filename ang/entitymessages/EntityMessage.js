@@ -81,8 +81,6 @@
           api_EntityMessage_create: {
             'entity_type' : 'Domain',
             'id' : currentEntityMessageID,
-            // Entity id coded to domain 1 for now.
-            'entity_id' : 1,
             'label' : currentMessage.title,
             'is_smarty_render' : currentMessage.is_smarty_render
           },

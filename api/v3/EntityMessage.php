@@ -27,6 +27,7 @@ function _civicrm_api3_entity_message_create_spec(&$spec) {
  * @throws API_Exception
  */
 function civicrm_api3_entity_message_create($params) {
+  $params['entity_id'] = CRM_Core_Config::domainID();
   return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
