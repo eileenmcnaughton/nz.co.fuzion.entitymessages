@@ -21,6 +21,21 @@ function _civicrm_api3_message_create_spec(&$spec) {
  * @throws API_Exception
  */
 function civicrm_api3_message_create($params) {
+  if (empty($params['id']) && empty($params['name'])) {
+    $name = $params['name'] = $params['title'];
+    $found = 1;
+    $count = 0;
+    while ($found !== 0) {
+      $found = civicrm_api3('Message', 'getcount', array(
+        'name' => $params['name'],
+      ));
+      if ($found) {
+        $count++;
+        $name = $params['name'] . $count;
+      }
+    }
+  }
+  $params['name'] = $name;
   return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
