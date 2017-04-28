@@ -316,7 +316,7 @@ function entitymessages_civicrm_preProcess($formName, &$form) {
  */
 function entitymessages_civicrm_navigationMenu(&$menu) {
 
-  _entitymessages_civix_insert_navigation_menu($menu, 'Communications', array(
+  _entitymessages_civix_insert_navigation_menu($menu, 'Administer/Communications', array(
     'label' => ts('Site Message Tokens', array('domain' => 'nz.co.fuzion.entitymessages')),
     'name' => 'entity_message_tokens',
     'url' => 'civicrm/a/#/entitymessages',
