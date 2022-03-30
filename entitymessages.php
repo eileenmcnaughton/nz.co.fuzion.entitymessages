@@ -41,7 +41,7 @@ function entitymessages_civicrm_install() {
   foreach ($templatesToLoad as $name => $title) {
     CRM_Core_DAO::executeQuery("
       INSERT INTO civicrm_message (title, name, body_html)
-      VALUES('{$title}', '{$name}', \"" .  file_get_contents($messageTemplatesDirectory . $name . '.tpl') . "\")
+      VALUES('{$title}', '{$name}', \"" .  addslashes(file_get_contents($messageTemplatesDirectory . $name . '.tpl')) . "\")
     ");
     CRM_Core_DAO::executeQuery("
       INSERT INTO civicrm_entity_message (label, name, is_smarty_render, entity_id, entity_type, message_id)
