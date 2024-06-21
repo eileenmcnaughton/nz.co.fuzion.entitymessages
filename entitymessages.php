@@ -292,8 +292,8 @@ function _entitymessages_assign_fiscal_vars() {
 function entitymessages_civicrm_pass_through_smarty($tokenHtml, $entity, $entityType = 'contact') {
   $smarty = CRM_Core_Smarty::singleton();
   // also add the tokens to the template
-  $smarty->assign_by_ref($entityType, $entity);
-  return $smarty->fetch("string:$tokenHtml");
+  $smarty->assign($entityType, $entity);
+  return \CRM_Utils_String::parseOneOffStringThroughSmarty($tokenHtml);
 }
 
 /**
