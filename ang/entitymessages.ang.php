@@ -18,7 +18,4 @@ return array (
   array (
     0 => 'ang/entitymessages',
   ),
-  'settings' => 
-  array (
-  ),
 );
