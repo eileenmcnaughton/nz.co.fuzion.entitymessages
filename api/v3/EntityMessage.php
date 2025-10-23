@@ -24,7 +24,7 @@ function _civicrm_api3_entity_message_create_spec(&$spec) {
  * @param array $params
  *
  * @return array API result descriptor
- * @throws API_Exception
+ * @throws CRM_Core_Exception
  */
 function civicrm_api3_entity_message_create($params) {
   $params['entity_id'] = CRM_Core_Config::domainID();
@@ -38,7 +38,7 @@ function civicrm_api3_entity_message_create($params) {
  *
  * @return array
  *   API result descriptor
- * @throws API_Exception
+ * @throws CRM_Core_Exception
  */
 function civicrm_api3_entity_message_delete($params) {
   return _civicrm_api3_basic_delete(_civicrm_api3_get_BAO(__FUNCTION__), $params);
@@ -51,7 +51,7 @@ function civicrm_api3_entity_message_delete($params) {
  *
  * @return array
  *   API result descriptor
- * @throws API_Exception
+ * @throws CRM_Core_Exception
  */
 function civicrm_api3_entity_message_get($params) {
   return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params);
