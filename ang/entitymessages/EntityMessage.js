@@ -1,4 +1,4 @@
-(function(angular, $, _) {
+(function(angular, $) {
 
   angular.module('entitymessages').config(function($routeProvider) {
       $routeProvider.when('/entitymessages', {
@@ -102,4 +102,4 @@
     };
   });
 
-})(angular, CRM.$, CRM._);
+})(angular, CRM.$);
