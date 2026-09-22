@@ -17,11 +17,11 @@ class CRM_Entitymessages_BAO_EntityMessage extends CRM_Entitymessages_DAO_Entity
       if (empty($params['name'])) {
         $params['name'] = CRM_Utils_String::munge($params['label']);
       }
-      $matchesCount = civicrm_api3('EntityMessage', 'getcount', array(
+      $matchesCount = civicrm_api3('EntityMessage', 'getcount', [
         'entity_type' => $params['entity_type'],
         'entity_id' => $params['entity_id'],
         'name' => $params['name'],
-      ));
+      ]);
       if ($matchesCount) {
         $params['name'] .= $matchesCount;
       }
