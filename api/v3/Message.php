@@ -26,9 +26,9 @@ function civicrm_api3_message_create($params) {
     $found = 1;
     $count = 0;
     while ($found !== 0) {
-      $found = civicrm_api3('Message', 'getcount', array(
+      $found = civicrm_api3('Message', 'getcount', [
         'name' => $params['name'],
-      ));
+      ]);
       if ($found) {
         $count++;
         $name = $params['name'] . $count;

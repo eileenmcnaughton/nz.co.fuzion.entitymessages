@@ -20,12 +20,12 @@ function entitymessages_civicrm_install() {
   _entitymessages_civix_civicrm_install();
   $messageTemplatesDirectory = __DIR__ . '/templates/Messages/';
 
-  $templatesToLoad = array(
+  $templatesToLoad = [
     'all_contributions_summary_block' => ts('All contributions for a contact (in a table)'),
     'thank_you_letter_summary_block' => ts('Thank you letter Contribution Summary'),
     'all_contributions_last_fy_summary_block' => ts('All contributions last financial year for contact (in a table)'),
     'all_contributions_this_fy_summary_block' => ts('All contributions this financial year for contact (in a table)'),
-  );
+  ];
   // Can't do this by api here & in managed it causes errors on uninstall.
   foreach ($templatesToLoad as $name => $title) {
     CRM_Core_DAO::executeQuery("
@@ -52,8 +52,8 @@ function entitymessages_civicrm_enable() {
  * Implements civicrm_tokens().
  */
 function entitymessages_civicrm_tokens(&$tokens) {
-  $entityMessages = civicrm_api3('EntityMessage', 'get', array());
-  $civitokens = array();
+  $entityMessages = civicrm_api3('EntityMessage', 'get', []);
+  $civitokens = [];
   foreach ($entityMessages['values'] as $token) {
     if ($token['entity_type'] == 'Domain' && empty($token['entity_id']) || $token['entity_id'] == CRM_Core_Config::domainID()) {
       $civitokens['entitymessages.'  .  $token['entity_type'] . '__' .  $token['name']] = $token['label'];
@@ -71,40 +71,40 @@ function entitymessages_civicrm_tokens(&$tokens) {
  * @param array $tokens
  * @param null $context
  */
-function entitymessages_civicrm_tokenValues(&$values, $contactIDs, $job = NULL, $tokens = array(), $context = NULL) {
+function entitymessages_civicrm_tokenValues(&$values, $contactIDs, $job = NULL, $tokens = [], $context = NULL) {
 
   if (empty($tokens['entitymessages'])) {
     return;
   }
-  static $categories = array();
+  static $categories = [];
   if (empty($categories)) {
-    $categories = array();
+    $categories = [];
     CRM_Utils_Hook::tokens($categories);
     $categories = array_keys($categories);
   }
-  $resolvedTokens = array();
+  $resolvedTokens = [];
   $tokenList = isset($tokens['entitymessages'][0]) ? $tokens['entitymessages'] : array_keys($tokens['entitymessages']);
   foreach ($tokenList as $token) {
     list($entity, $name) = explode('__', $token);
-    $entityClause = array();
+    $entityClause = [];
     if ($entity == 'Domain') {
-      $entityClause['entity_id'] = array('IN' => array(0, CRM_Core_Config::domainID()));
+      $entityClause['entity_id'] = ['IN' => [0, CRM_Core_Config::domainID()]];
     }
     // Note that 0 denotes 'all entities' - ie. a default. It is sorted to the bottom
     // and only is used if another is not found.
-    $entityMessages = civicrm_api3('EntityMessage', 'get', array_merge(array(
+    $entityMessages = civicrm_api3('EntityMessage', 'get', array_merge([
       'entity_type' => $entity,
       'name' => $name,
       'sequential' => 1,
-      'options' => array('sort' => 'entity_id DESC'),
-    ), $entityClause));
+      'options' => ['sort' => 'entity_id DESC'],
+    ], $entityClause));
 
     if ($entityMessages['count']) {
       $entityMessage = $entityMessages['values'][0];
-      $message = civicrm_api3('Message', 'getvalue', array(
+      $message = civicrm_api3('Message', 'getvalue', [
         'id' => $entityMessage['message_id'],
         'return' => 'body_html',
-      ));
+      ]);
 
       // $tokenHtml = CRM_Utils_Token::replaceEntityTokens('membership', $membership, $tokenHtml, $messageToken);
       //$tokenHtml = CRM_Utils_Token::replaceHookTokens($message, $contacts[$contactId], $categories, TRUE);
@@ -118,15 +118,15 @@ function entitymessages_civicrm_tokenValues(&$values, $contactIDs, $job = NULL, 
         $tokensToRender = CRM_Utils_Token::getTokens($message);
         foreach ($contactIDs as $contactID) {
           // @todo calculate return properties.
-          $contact = civicrm_api3('Contact', 'getsingle', array('id' => $contactID));
+          $contact = civicrm_api3('Contact', 'getsingle', ['id' => $contactID]);
           CRM_Core_Smarty::singleton()->assign('messageContactID', $contactID);
           $message = CRM_Utils_Token::replaceContactTokens($message, $contact, TRUE, $tokensToRender);
           $message = entitymessages_civicrm_pass_through_smarty($message, $contact);
 
           // also call a hook and get token details
-          $resolvers = array($contactID => $contact);
+          $resolvers = [$contactID => $contact];
           CRM_Utils_Hook::tokenValues($resolvers,
-            array($contactID),
+            [$contactID],
             NULL,
             $tokensToRender,
             'entity_message'
@@ -170,18 +170,18 @@ function _entitymessages_assign_fiscal_vars() {
   $smarty->assign('em_this_fiscal_year_end', date('YmdHis', $thisFiscalYearEnd));
   $smarty->assign('em_last_fiscal_year_start', date('YmdHis', $lastFiscalYearStart));
   $smarty->assign('em_last_fiscal_year_end', date('YmdHis', $lastFiscalYearEnd));
-  $smarty->assign('em_this_year_clause', array(
-    'BETWEEN' => array(
+  $smarty->assign('em_this_year_clause', [
+    'BETWEEN' => [
       date('YmdHis', $thisFiscalYearStart),
       date('YmdHis', $thisFiscalYearEnd),
-    ),
-  ));
-  $smarty->assign('em_last_year_clause', array(
-    'BETWEEN' => array(
+    ],
+  ]);
+  $smarty->assign('em_last_year_clause', [
+    'BETWEEN' => [
       date('YmdHis', $lastFiscalYearStart),
       date('YmdHis', $lastFiscalYearEnd),
-    ),
-  ));
+    ],
+  ]);
 }
 
 /**
@@ -222,14 +222,14 @@ function entitymessages_civicrm_pass_through_smarty($tokenHtml, $entity, $entity
  */
 function entitymessages_civicrm_navigationMenu(&$menu) {
 
-  _entitymessages_civix_insert_navigation_menu($menu, 'Administer/Communications', array(
-    'label' => ts('Site Message Tokens', array('domain' => 'nz.co.fuzion.entitymessages')),
+  _entitymessages_civix_insert_navigation_menu($menu, 'Administer/Communications', [
+    'label' => ts('Site Message Tokens', ['domain' => 'nz.co.fuzion.entitymessages']),
     'name' => 'entity_message_tokens',
     'url' => 'civicrm/a/#/entitymessages',
     'permission' => 'administer CiviCRM',
     'operator' => 'OR',
     'separator' => 0,
-  ));
+  ]);
   _entitymessages_civix_navigationMenu($menu);
 }
 
@@ -240,14 +240,14 @@ function entitymessages_civicrm_navigationMenu(&$menu) {
  *   Registered entity types.
  */
 function entitymessages_civicrm_entityTypes(&$entityTypes) {
-  $entityTypes['CRM_Entitymessages_DAO_EntityMessage'] = array(
+  $entityTypes['CRM_Entitymessages_DAO_EntityMessage'] = [
     'name' => 'EntityMessage',
     'class' => 'CRM_Entitymessages_DAO_EntityMessage',
     'table' => 'civicrm_entity_message',
-  );
-  $entityTypes['CRM_Entitymessages_DAO_Message'] = array(
+  ];
+  $entityTypes['CRM_Entitymessages_DAO_Message'] = [
     'name' => 'Message',
     'class' => 'CRM_Entitymessages_DAO_Message',
     'table' => 'civicrm_message',
-  );
+  ];
 }

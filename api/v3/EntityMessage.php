@@ -12,9 +12,9 @@
 function _civicrm_api3_entity_message_create_spec(&$spec) {
   // So far we are only supporting domain.
   $spec['entity_type']['api.default'] = 'Domain';
-  $spec['entity_type']['options'] = array(
+  $spec['entity_type']['options'] = [
     'Domain' => 'Domain',
-  );
+  ];
   $spec['entity_id']['api.default'] = CRM_Core_Config::domainID();
 }
 
